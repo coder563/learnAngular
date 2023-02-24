@@ -1,6 +1,7 @@
 
-import {Component, OnInit} from "@angular/core"
+import {Component, OnDestroy, OnInit} from "@angular/core"
 import { IProduct } from "./product"
+import { ProductService } from "./product.service"
 
 @Component({
 
@@ -8,7 +9,10 @@ import { IProduct } from "./product"
     templateUrl:'./product-list.component.html',
     styleUrls:['./product-list.component.css']
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit{
+
+    constructor(private productService : ProductService)  {}
+
     imageWidth: number = 50
     imageHeight: number = 50
     pageTitle:string='Fancy Product List'
@@ -29,70 +33,39 @@ export class ProductListComponent implements OnInit {
 
     }
 
+    onNotify (message: string){
 
-    get filter(): string {
-
-        return this._filter
-
+            this.pageTitle = "This is the rating that was clicked " + message
 
     }
 
-    filteredProducts:IProduct[]=[]
-    
-    products:IProduct[] = [
-        {
-        "productId": 1,
-        "productName": "Leaf Rake",
-        "productCode": "GDN-0011",
-        "releaseDate": "March 19, 2021",
-        "description": "Leaf rake with 48-inch wooden handle.",
-        "price": 19.95,
-        "starRating": 3.2,
-        "imageUrl": "../assets/images/leaf_rake.png"
-      },
-      {
-        "productId": 2,
-        "productName": "Garden Cart",
-        "productCode": "GDN-0023",
-        "releaseDate": "March 18, 2021",
-        "description": "15 gallon capacity rolling garden cart",
-        "price": 32.99,
-        "starRating": 4.2,
-        "imageUrl": "../assets/images/garden_cart.png"
-      },
-      {
-        "productId": 3,
-        "productName": "3 Garden Cart",
-        "productCode": "GDN-0023",
-        "releaseDate": "March 18, 2021",
-        "description": "15 gallon capacity rolling garden cart",
-        "price": 32.99,
-        "starRating": 4.2,
-        "imageUrl": "../assets/images/garden_cart.png"
-      },
-      {
-        "productId": 4,
-        "productName": "4 Garden Cart",
-        "productCode": "GDN-0023",
-        "releaseDate": "March 18, 2021",
-        "description": "15 gallon capacity rolling garden cart",
-        "price": 32.99,
-        "starRating": 4.2,
-        "imageUrl": "../assets/images/garden_cart.png"
-      }
-    ]
+    get filter(): string {       return this._filter
+    }
 
+    filteredProducts:IProduct[]=[]    
+    products:IProduct[] = []
+       
     toggleImage(){
 
        this.showImage = !this.showImage
     }
 
-
     ngOnInit(): void {
         
-
-       this._filter='barty'
+       this._filter=''
        console.log(this._filter)
+       const x = this.productService.getProducts()
+       console.log("Before calling subscribe")
+       x.subscribe({
+        next:(products) =>{
+            console.log('This is the product response received '+  products[0].description)
+            /*this.products=products*/
+            this.filteredProducts = products
+            this.products =products
+        },
+        error:(err)=>console.log("Error Encountered " + err)
+        })
+       console.log("On Init Done")
     }
 
     performFilter():IProduct[]{
