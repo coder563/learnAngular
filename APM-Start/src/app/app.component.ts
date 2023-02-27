@@ -4,17 +4,23 @@ import { Component } from "@angular/core"
 @Component({
 
   selector:'pm-root',
-  template:`<html><h1>{{pageTitle}}</h1>
-            <div>This is my first component</div>
-            <pm-products></pm-products>
-            </html>`,
+  template: 
+  `<nav class='navbar navbar-expand navbar-light bg-light'>
+    <a class='navbar-brand'>{{pageTitle}}</a>
+    <ul class='nav nav-pills'>
+      <li><a routerLink ='/welcome' class='nav-link'>Home</a></li>
+      <li><a [routerLink]="['/products']" class='nav-link'> Prouct List</a></li>
+    </ul> 
+  </nav>  
+  <router-outlet> </router-outlet>
+  `
 
 
 
 
 })
 export class AppComponent{
-  pageTitle:string="This is my new AppComponent"
+  pageTitle:string="Acme Product Management"
 }
 
  
